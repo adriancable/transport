@@ -7,7 +7,9 @@
 
 //go:build !amd64 && !ppc64 && !ppc64le && !arm64
 
-package transport
+// Package cipher provides utility functions used by other Pion
+// packages. Generic arch.
+package cipher
 
 import (
 	"runtime"
@@ -21,7 +23,7 @@ func isAligned(a *[]byte) bool {
 	return uintptr(unsafe.Pointer(a)) % uintptr(wordSize) == 0
 }
 
-// xorBytes xors the bytes in a and b. The destination should have enough
+// XorBytes xors the bytes in a and b. The destination should have enough
 // space, otherwise xorBytes will panic. Returns the number of bytes xor'd.
 func XorBytes(dst, a, b []byte) int {
 	n := len(a)
@@ -84,7 +86,7 @@ func fastXORWords(dst, a, b []byte) {
 	}
 }
 
-// fastXORWords XORs multiples of 4 or 8 bytes (depending on architecture.)
+// XorWords XORs multiples of 4 or 8 bytes (depending on architecture.)
 // The slice arguments a and b are assumed to be of equal length.
 func XorWords(dst, a, b []byte) {
 	if supportsUnaligned || (isAligned(&dst) && isAligned(&a) && isAligned(&b)) {

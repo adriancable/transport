@@ -2,9 +2,11 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package transport
+// Package cipher provides utility functions used by other Pion
+// packages. AMD64 arch.
+package cipher
 
-// xorBytes xors the bytes in a and b. The destination should have enough
+// XorBytes xors the bytes in a and b. The destination should have enough
 // space, otherwise xorBytes will panic. Returns the number of bytes xor'd.
 func XorBytes(dst, a, b []byte) int {
 	n := len(a)
@@ -19,6 +21,8 @@ func XorBytes(dst, a, b []byte) int {
 	return n
 }
 
+// XorWords XORs multiples of 4 or 8 bytes (depending on architecture.)
+// The slice arguments a and b are assumed to be of equal length.
 func XorWords(dst, a, b []byte) {
 	XorBytes(dst, a, b)
 }

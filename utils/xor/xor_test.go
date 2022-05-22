@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package transport
+package cipher
 
 import (
 	"bytes"
@@ -65,7 +65,7 @@ func BenchmarkXORBytes(b *testing.B) {
 		b.Run(fmt.Sprintf("%dBytes", size), func(b *testing.B) {
 			s0 := data0[:size]
 			s1 := data1[:size]
-			b.SetBytes(int64(size))
+			b.SetBytes(size)
 			for i := 0; i < b.N; i++ {
 				XorBytes(dst, s0, s1)
 			}
