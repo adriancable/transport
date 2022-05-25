@@ -22,7 +22,9 @@ func TestXOR(t *testing.T) {
 				for alignD := 0; alignD < 2; alignD++ {
 					p := make([]byte, j)[alignP:]
 					q := make([]byte, j)[alignQ:]
-					d1 := make([]byte, j+alignD)[alignD:]
+					d0 := make([]byte, j+alignD+1)
+					d0[j+alignD] = 42
+					d1 := d0[alignD : j+alignD]
 					d2 := make([]byte, j+alignD)[alignD:]
 					if _, err := io.ReadFull(rand.Reader, p); err != nil {
 						t.Fatal(err)
@@ -36,11 +38,15 @@ func TestXOR(t *testing.T) {
 						d2[i] = p[i] ^ q[i]
 					}
 					if !bytes.Equal(d1, d2) {
-						t.Logf("p: %#v", p)
-						t.Logf("q: %#v", q)
-						t.Logf("expect: %#v", d2)
-						t.Logf("result: %#v", d1)
-						t.Fatal("not equal")
+						t.Errorf(
+							"p: %#v, q: %#v, " +
+								"expect: %#v, " +
+								"result: %#v",
+							p, q, d2, d1,
+						)
+					}
+					if d0[j+alignD] != 42 {
+						t.Error("guard overwritten")
 					}
 				}
 			}
