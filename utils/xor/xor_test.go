@@ -56,7 +56,7 @@ func min(a, b []byte) int {
 	return n
 }
 
-func BenchmarkXORBytes(b *testing.B) {
+func BenchmarkXORAligned(b *testing.B) {
 	dst := make([]byte, 1<<15)
 	data0 := make([]byte, 1<<15)
 	data1 := make([]byte, 1<<15)
@@ -68,6 +68,23 @@ func BenchmarkXORBytes(b *testing.B) {
 			b.SetBytes(size)
 			for i := 0; i < b.N; i++ {
 				XorBytes(dst, s0, s1)
+			}
+		})
+	}
+}
+
+func BenchmarkXORUnalignedDst(b *testing.B) {
+	dst := make([]byte, 1<<15+1)
+	data0 := make([]byte, 1<<15)
+	data1 := make([]byte, 1<<15)
+	sizes := []int64{1 << 3, 1 << 7, 1 << 11, 1 << 15}
+	for _, size := range sizes {
+		b.Run(fmt.Sprintf("%dBytes", size), func(b *testing.B) {
+			s0 := data0[:size]
+			s1 := data1[:size]
+			b.SetBytes(size)
+			for i := 0; i < b.N; i++ {
+				XorBytes(dst[1:], s0, s1)
 			}
 		})
 	}
